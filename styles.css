@@ -1,66 +1,67 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+    background-color: #f2f2f2;
+    padding: 20px;
 }
 
 .container {
-    background: #fff;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
 }
 
 h1 {
     text-align: center;
-    margin-bottom: 20px;
 }
 
 form {
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 20px;
 }
 
-label {
-    margin: 10px 0 5px;
+form label {
+    font-weight: bold;
 }
 
-input {
-    padding: 5px;
-    font-size: 16px;
+form input {
+    padding: 8px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-button {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
+form button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #0056b3;
+form button:hover {
+    background-color: #45a049;
 }
 
 table {
     width: 100%;
-    margin-top: 20px;
     border-collapse: collapse;
+    margin-bottom: 20px;
 }
 
-th, td {
+table th, table td {
+    border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
-    border: 1px solid #ddd;
 }
 
-thead {
-    background-color: #f4f4f4;
+table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.action-btn {
+    cursor: pointer;
+    color: #007bff;
 }
