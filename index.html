@@ -11,39 +11,42 @@
         <h1>Ecoquant Data Collection</h1>
         <form id="data-form">
             <label for="date">Date:</label>
-            <input type="date" id="date" name="date" required>
-            
+            <input type="date" id="date" required>
+            <br><br>
             <label for="location">Location:</label>
-            <input type="text" id="location" name="location" required>
-            
-            <label for="petrol">Litres of Petrol:</label>
-            <input type="number" id="petrol" name="petrol" step="0.01" required>
-            
-            <label for="diesel">Litres of Diesel:</label>
-            <input type="number" id="diesel" name="diesel" step="0.01" required>
-            
-            <label for="charcoal">Kilos of Charcoal:</label>
-            <input type="number" id="charcoal" name="charcoal" step="0.01" required>
-            
+            <input type="text" id="location" required>
+            <br><br>
+            <label for="petrol">Petrol (Liters):</label>
+            <input type="number" id="petrol" min="0" step="0.01" required>
+            <br><br>
+            <label for="diesel">Diesel (Liters):</label>
+            <input type="number" id="diesel" min="0" step="0.01" required>
+            <br><br>
+            <label for="charcoal">Charcoal (Kilos):</label>
+            <input type="number" id="charcoal" min="0" step="0.01" required>
+            <br><br>
             <button type="submit">Add Data</button>
         </form>
-        
+        <br><br>
         <table id="data-table">
             <thead>
                 <tr>
                     <th>Date</th>
                     <th>Location</th>
-                    <th>Petrol (Litres)</th>
-                    <th>Diesel (Litres)</th>
+                    <th>Petrol (Liters)</th>
+                    <th>Diesel (Liters)</th>
                     <th>Charcoal (Kilos)</th>
-                    <th>Total CO₂ Emissions (Kg)</th>
-                    <th>Actions</th>
+                    <th>Total CO2 (kg)</th>
+                    <th>Action</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+                <!-- Data rows will be inserted here dynamically -->
+            </tbody>
         </table>
+        <br><br>
+        <button id="view-data-btn">View Saved Data</button>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
