@@ -13,31 +13,87 @@ document.getElementById('data-form').addEventListener('submit', function (e) {
 
     const totalCO2 = petrolCO2 + dieselCO2 + charcoalCO2;
 
-    const table = document.getElementById('data-table').querySelector('tbody');
-    const newRow = table.insertRow();
+    // Prepare data to append to CSV
+    const newData = `${date},${location},${petrol.toFixed(2)},${diesel.toFixed(2)},${charcoal.toFixed(2)},${totalCO2.toFixed(2)}\n`;
 
-    newRow.innerHTML = `
-        <td>${date}</td>
-        <td>${location}</td>
-        <td>${petrol.toFixed(2)}</td>
-        <td>${diesel.toFixed(2)}</td>
-        <td>${charcoal.toFixed(2)}</td>
-        <td>${totalCO2.toFixed(2)}</td>
-    `;
-
-    document.getElementById('data-form').reset();
+    // Append data to CSV file in repository
+    fetch('data.csv', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/csv'
+        },
+        body: newData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        console.log('Data saved successfully.');
+        updateTable(); // Update table with current data
+        document.getElementById('data-form').reset();
+    })
+    .catch(error => console.error('Error saving data:', error));
 });
 
-document.getElementById('download-csv').addEventListener('click', function () {
-    const table = document.getElementById('data-table');
-    let csv = [];
-    for (let i = 0, row; row = table.rows[i]; i++) {
-        let cols = [];
-        for (let j = 0, col; col = row.cells[j]; j++) {
-            cols.push(col.innerText);
-        }
-        csv.push(cols.join(","));
-    }
-    const csvFile = new Blob([csv.join("\n")], { type: 'text/csv' });
-    saveAs(csvFile, 'ecoquant_data.csv');
+// Function to update table with data from CSV file
+function updateTable() {
+    fetch('data.csv')
+    .then(response => response.text())
+    .then(data => {
+        const table = document.getElementById('data-table').querySelector('tbody');
+        table.innerHTML = '';
+
+        // Parse CSV data and update table rows
+        data.trim().split('\n').forEach(row => {
+            const cells = row.split(',');
+            const newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td>${cells[0]}</td>
+                <td>${cells[1]}</td>
+                <td>${cells[2]}</td>
+                <td>${cells[3]}</td>
+                <td>${cells[4]}</td>
+                <td>${cells[5]}</td>
+                <td><span class="action-btn" onclick="deleteRow(this)">Delete</span></td>
+            `;
+        });
+    })
+    .catch(error => console.error('Error fetching data:', error));
+}
+
+// Function to delete a row from table and CSV file
+function deleteRow(element) {
+    const row = element.parentElement.parentElement;
+    const index = row.rowIndex - 1; // Adjust for header row
+
+    // Fetch current CSV data
+    fetch('data.csv')
+    .then(response => response.text())
+    .then(data => {
+        let lines = data.trim().split('\n');
+        lines.splice(index, 1); // Remove the selected row from array
+        const updatedData = lines.join('\n');
+
+        // Update CSV file with modified data
+        fetch('data.csv', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'text/csv'
+            },
+            body: updatedData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            console.log('Row deleted successfully.');
+            updateTable(); // Update table after deletion
+        })
+        .catch(error => console.error('Error deleting row:', error));
+    })
+    .catch(error => console.error('Error fetching data:', error));
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    updateTable(); // Initial table update on page load
 });
