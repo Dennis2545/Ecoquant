@@ -1,41 +1,4 @@
-document.getElementById('data-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const date = document.getElementById('date').value;
-    const location = document.getElementById('location').value;
-    const petrol = parseFloat(document.getElementById('petrol').value) || 0;
-    const diesel = parseFloat(document.getElementById('diesel').value) || 0;
-    const charcoal = parseFloat(document.getElementById('charcoal').value) || 0;
-
-    const petrolCO2 = petrol * 2.31; // Example emission factor: 2.31 kg CO2 per litre of petrol
-    const dieselCO2 = diesel * 2.68; // Example emission factor: 2.68 kg CO2 per litre of diesel
-    const charcoalCO2 = charcoal * 3.67; // Example emission factor: 3.67 kg CO2 per kilo of charcoal
-
-    const totalCO2 = petrolCO2 + dieselCO2 + charcoalCO2;
-
-    // Prepare data to append to CSV
-    const newData = `${date},${location},${petrol.toFixed(2)},${diesel.toFixed(2)},${charcoal.toFixed(2)},${totalCO2.toFixed(2)}\n`;
-
-    // Append data to CSV file in repository
-    fetch('data.csv', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'text/csv'
-        },
-        body: newData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        console.log('Data saved successfully.');
-        updateTable(); // Update table with current data
-        document.getElementById('data-form').reset();
-    })
-    .catch(error => console.error('Error saving data:', error));
-});
-
-// Function to update table with data from CSV file
+// Function to fetch and update table with data from CSV file
 function updateTable() {
     fetch('data.csv')
     .then(response => response.text())
@@ -94,6 +57,42 @@ function deleteRow(element) {
     .catch(error => console.error('Error fetching data:', error));
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    updateTable(); // Initial table update on page load
+document.getElementById('data-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const date = document.getElementById('date').value;
+    const location = document.getElementById('location').value;
+    const petrol = parseFloat(document.getElementById('petrol').value) || 0;
+    const diesel = parseFloat(document.getElementById('diesel').value) || 0;
+    const charcoal = parseFloat(document.getElementById('charcoal').value) || 0;
+
+    const petrolCO2 = petrol * 2.31; // Example emission factor: 2.31 kg CO2 per litre of petrol
+    const dieselCO2 = diesel * 2.68; // Example emission factor: 2.68 kg CO2 per litre of diesel
+    const charcoalCO2 = charcoal * 3.67; // Example emission factor: 3.67 kg CO2 per kilo of charcoal
+
+    const totalCO2 = petrolCO2 + dieselCO2 + charcoalCO2;
+
+    // Prepare data to append to CSV
+    const newData = `${date},${location},${petrol.toFixed(2)},${diesel.toFixed(2)},${charcoal.toFixed(2)},${totalCO2.toFixed(2)}\n`;
+
+    // Append data to CSV file in repository
+    fetch('data.csv', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/csv'
+        },
+        body: newData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        console.log('Data saved successfully.');
+        updateTable(); // Update table with current data
+        document.getElementById('data-form').reset();
+    })
+    .catch(error => console.error('Error saving data:', error));
 });
+
+// Initial table update on page load
+updateTable();
