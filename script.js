@@ -1,61 +1,6 @@
-// Function to fetch and update table with data from CSV file
-function updateTable() {
-    fetch('data.csv')
-    .then(response => response.text())
-    .then(data => {
-        const table = document.getElementById('data-table').querySelector('tbody');
-        table.innerHTML = '';
+const webAppUrl = 'https://script.google.com/macros/s/AKfycbwddCo_fbJIiWi8lpu6Ti-kR6LTAGOo9nedai-ASpeaOrDSHA4alK_fxoVcjAXH2b7QTg/exec';
 
-        // Parse CSV data and update table rows
-        data.trim().split('\n').forEach(row => {
-            const cells = row.split(',');
-            const newRow = table.insertRow();
-            newRow.innerHTML = `
-                <td>${cells[0]}</td>
-                <td>${cells[1]}</td>
-                <td>${cells[2]}</td>
-                <td>${cells[3]}</td>
-                <td>${cells[4]}</td>
-                <td>${cells[5]}</td>
-                <td><span class="action-btn" onclick="deleteRow(this)">Delete</span></td>
-            `;
-        });
-    })
-    .catch(error => console.error('Error fetching data:', error));
-}
-
-// Function to delete a row from table and CSV file
-function deleteRow(element) {
-    const row = element.parentElement.parentElement;
-    const index = row.rowIndex - 1; // Adjust for header row
-
-    // Fetch current CSV data
-    fetch('data.csv')
-    .then(response => response.text())
-    .then(data => {
-        let lines = data.trim().split('\n');
-        lines.splice(index, 1); // Remove the selected row from array
-        const updatedData = lines.join('\n');
-
-        // Update CSV file with modified data
-        fetch('data.csv', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'text/csv'
-            },
-            body: updatedData
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            console.log('Row deleted successfully.');
-            updateTable(); // Update table after deletion
-        })
-        .catch(error => console.error('Error deleting row:', error));
-    })
-    .catch(error => console.error('Error fetching data:', error));
-}
+let ecoquantData = []; // Array to store collected data
 
 document.getElementById('data-form').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -72,27 +17,71 @@ document.getElementById('data-form').addEventListener('submit', function (e) {
 
     const totalCO2 = petrolCO2 + dieselCO2 + charcoalCO2;
 
-    // Prepare data to append to CSV
-    const newData = `${date},${location},${petrol.toFixed(2)},${diesel.toFixed(2)},${charcoal.toFixed(2)},${totalCO2.toFixed(2)}\n`;
+    // Add data to the array
+    const newData = {
+        date: date,
+        location: location,
+        petrol: petrol.toFixed(2),
+        diesel: diesel.toFixed(2),
+        charcoal: charcoal.toFixed(2),
+        totalCO2: totalCO2.toFixed(2)
+    };
+    ecoquantData.push(newData);
 
-    // Append data to CSV file in repository
-    fetch('data.csv', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'text/csv'
-        },
-        body: newData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        console.log('Data saved successfully.');
-        updateTable(); // Update table with current data
-        document.getElementById('data-form').reset();
-    })
-    .catch(error => console.error('Error saving data:', error));
+    // Update table with current data
+    updateTable();
+
+    // Save data to Google Sheets
+    saveDataToGoogleSheets(newData);
 });
 
-// Initial table update on page load
-updateTable();
+function updateTable() {
+    const tableBody = document.getElementById('data-table').querySelector('tbody');
+    tableBody.innerHTML = '';
+
+    ecoquantData.forEach(data => {
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${data.date}</td>
+            <td>${data.location}</td>
+            <td>${data.petrol}</td>
+            <td>${data.diesel}</td>
+            <td>${data.charcoal}</td>
+            <td>${data.totalCO2}</td>
+            <td><span class="action-btn" onclick="deleteRow(this)">Delete</span></td>
+        `;
+        tableBody.appendChild(newRow);
+    });
+}
+
+function deleteRow(element) {
+    const row = element.parentElement.parentElement;
+    const index = row.rowIndex - 1;
+    ecoquantData.splice(index, 1); // Remove data from array
+    row.remove(); // Remove row from table
+}
+
+function saveDataToGoogleSheets(data) {
+    fetch(webAppUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log('Data saved successfully:', result);
+    })
+    .catch(error => console.error('Error saving data:', error));
+}
+
+document.getElementById('view-data-btn').addEventListener('click', function () {
+    fetch(webAppUrl)
+        .then(response => response.json())
+        .then(data => {
+            ecoquantData = data;
+            updateTable();
+        })
+        .catch(error => console.error('Error fetching data:', error));
+});
