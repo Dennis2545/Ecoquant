@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecoquant Data Collection</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('ecoquant-background.jpg'); /* Replace with your background image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .header {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin-top: 80px; /* Adjust according to header height */
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="date"], input[type="number"], input[type="text"] {
+            width: calc(100% - 24px);
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .footer {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Ecoquant Data Collection</h1>
+    </div>
+
+    <div class="container">
+        <form method="post" autocomplete="off" name="ecoquant-form">
+            <table>
+                <tr>
+                    <td><b>Date :</b></td>
+                    <td><input type="date" name="Date" required /></td>
+                </tr>
+                <tr>
+                    <td><b>Location :</b></td>
+                    <td><input type="text" name="Location" required /></td>
+                </tr>
+                <tr>
+                    <td><b>Petrol :</b></td>
+                    <td><input type="number" name="Petrol" required /></td>
+                </tr>
+                <tr>
+                    <td><b>Diesel :</b></td>
+                    <td><input type="number" name="Diesel" required /></td>
+                </tr>
+                <tr>
+                    <td><b>Charcoal :</b></td>
+                    <td><input type="number" name="Charcoal" required /></td>
+                </tr>
+                <tr>
+                    <td><b>LPG :</b></td>
+                    <td><input type="number" name="LPG" required /></td>
+                </tr>
+            </table>
+            <input type="submit" name="submit" value="Submit"/>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Ecoquant Analytics. All rights reserved.</p>
+    </div>
+
+    <script type="text/javascript">
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwJEB02Uc3PfeHmsbpu_DsU4MfJioc4Y1ioMKbCAnKZcct589TIXuUgphJrPoriMkPY/exec';
+        const form = document.forms['ecoquant-form'];
+        
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                .then(response => alert("Data successfully submitted."))
+                .catch(error => console.error('Error!', error.message));
+        });
+    </script>
+</body>
+</html>
