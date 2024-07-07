@@ -16,7 +16,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh; /* Use min-height instead of height for responsiveness */
         }
         .header {
             background-color: rgba(0, 0, 0, 0.5);
@@ -108,19 +108,19 @@
                     <td><input type="text" name="Location" required /></td>
                 </tr>
                 <tr>
-                    <td><b>Petrol :</b></td>
+                    <td><b>Petrol (liters) :</b></td>
                     <td><input type="number" name="Petrol" required /></td>
                 </tr>
                 <tr>
-                    <td><b>Diesel :</b></td>
+                    <td><b>Diesel (liters) :</b></td>
                     <td><input type="number" name="Diesel" required /></td>
                 </tr>
                 <tr>
-                    <td><b>Charcoal :</b></td>
+                    <td><b>Charcoal (kilograms) :</b></td>
                     <td><input type="number" name="Charcoal" required /></td>
                 </tr>
                 <tr>
-                    <td><b>LPG :</b></td>
+                    <td><b>LPG (liters) :</b></td>
                     <td><input type="number" name="LPG" required /></td>
                 </tr>
             </table>
